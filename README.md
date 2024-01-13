@@ -12,3 +12,5 @@ UART2	GPIO16	GPIO17	GPIO8	GPIO7
 
 
 ![images](https://github.com/Ramin-nataj/HM_TRP_ESP32/assets/42840850/4daa3375-4654-4105-a3fd-4979274bd11a)
+
+https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.tme.eu%2FDocument%2F8e429fc6ed10cdcaa8ae22bf1d573055%2FHM-TRP.pdf&psig=AOvVaw37hieohnx_yj5c8E1BdOeI&ust=1705231482952000&source=images&cd=vfe&ved=0CBUQjhxqFwoTCIiloaWg2oMDFQAAAAAdAAAAABAE
