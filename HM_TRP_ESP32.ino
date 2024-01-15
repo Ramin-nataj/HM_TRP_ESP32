@@ -28,8 +28,11 @@ uint8_t Set_Reset[3] = { 0xAA, 0xFA, 0xF0 };                              //Rese
 uint8_t Set_Reading[3] = { 0xAA, 0xFA, 0xE1 };                            //Reading the current Config parameter
 uint8_t Set_frequency[7] = { 0xAA, 0xFA, 0xD2, 0x19, 0xDD, 0x18, 0x00 };  //433.92
 uint8_t Set_drate[7] = { 0xAA, 0xFA, 0xC3, 0x00, 0x00, 0x25, 0x80 };      //set up transfer speed as 9600bps
-uint8_t Set_bandwidth[5] = { 0xAA, 0xFA, 0xB4, 0x00, 0x6E };              //110KHZ
-uint8_t Set_deviation[4] = { 0xAA, 0xFA, 0xA5, 0x28 };                    //set up modulation frequency as 40KHz
+// uint8_t Set_bandwidth[5] = { 0xAA, 0xFA, 0xB4, 0x00, 0x6E };              //110KHZ
+// uint8_t Set_bandwidth[5] = { 0xAA, 0xFA, 0xB4, 0x00, 0x73 };              //115.0KHZ
+uint8_t Set_bandwidth[5] = { 0xAA, 0xFA, 0xB4, 0x03, 0x31 };              //817.0KHZ
+
+uint8_t Set_deviation[4] = { 0xAA, 0xFA, 0xA5, 0x28 };                    //Set up frequency deviation as 40KHz
 uint8_t Set_level[4] = { 0xAA, 0xFA, 0x96, 0x03 };                        //set up transmission power as level 3 (+8 dBm)
 uint8_t Set_UARTdrate[7] = { 0xAA, 0xFA, 0x1E, 0x00, 0x00, 0x25, 0x80 };  //Set up UART transfer speed speed as 9600bps
 uint8_t Set_signalStr[3] = { 0xAA, 0xFA, 0x87 };                          //Wireless signal strength when receiving useful data
@@ -62,37 +65,37 @@ void setup() {
   //Serial2.println();
 
 
-  Serial2.write(Set_Reset, sizeof(Set_Reset));
-  Serial2.println();
-  Serial.println((char)Serial2.read());
-  delay(250);
+  // Serial2.write(Set_Reset, sizeof(Set_Reset));
+  // Serial2.println();
+  // Serial.println((char)Serial2.read());
+  // delay(250);
   Serial2.write(Set_frequency, sizeof(Set_frequency));
-  Serial2.println();
+  // Serial2.println();
   Serial.println((char)Serial2.read());
   delay(250);
   Serial2.write(Set_drate, sizeof(Set_drate));  //Set up wireless data rate
-  Serial2.println();
+  // Serial2.println();
   delay(250);
   Serial2.write(Set_bandwidth, sizeof(Set_bandwidth));  // Set up receiving bandwidth
-  Serial2.println();
+  // Serial2.println();
   delay(250);
   Serial2.write(Set_deviation, sizeof(Set_deviation));  // set up modulation frequency as 40KHz
-  Serial2.println();
+  // Serial2.println();
   delay(250);
   Serial2.write(Set_level, sizeof(Set_level));  //Set up transmission power
-  Serial2.println();
+  // Serial2.println();
   delay(250);
   Serial2.write(Set_UARTdrate, sizeof(Set_UARTdrate));  //
-  Serial2.println();
+  // Serial2.println();
   delay(250);
   Serial2.write(Set_signalStr, sizeof(Set_signalStr));  //
-  Serial2.println();
+  // Serial2.println();
   delay(250);
   Serial2.write(Set_Disturb, sizeof(Set_Disturb));  //
-  Serial2.println();
+  // Serial2.println();
   delay(250);
   Serial2.write(Set_Reading, sizeof(Set_Reading));  //Set up transmission power
-  Serial2.println();
+  // Serial2.println();
   delay(67);
   Serial.println((char)Serial2.read());
 
