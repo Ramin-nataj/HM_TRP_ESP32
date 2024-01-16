@@ -30,12 +30,12 @@ uint8_t Set_frequency[7] = { 0xAA, 0xFA, 0xD2, 0x19, 0xDD, 0x18, 0x00 };  //433.
 uint8_t Set_drate[7] = { 0xAA, 0xFA, 0xC3, 0x00, 0x00, 0x25, 0x80 };      //set up transfer speed as 9600bps
 // uint8_t Set_bandwidth[5] = { 0xAA, 0xFA, 0xB4, 0x00, 0x6E };              //110KHZ
 // uint8_t Set_bandwidth[5] = { 0xAA, 0xFA, 0xB4, 0x00, 0x73 };              //115.0KHZ
-uint8_t Set_bandwidth[5] = { 0xAA, 0xFA, 0xB4, 0x03, 0x31 };              //817.0KHZ
+uint8_t Set_bandwidth[5] = { 0xAA, 0xFA, 0xB4, 0x03, 0x31 };  //817.0KHZ
 
 uint8_t Set_deviation[4] = { 0xAA, 0xFA, 0xA5, 0x28 };                    //Set up frequency deviation as 40KHz
 uint8_t Set_level[4] = { 0xAA, 0xFA, 0x96, 0x03 };                        //set up transmission power as level 3 (+8 dBm)
 uint8_t Set_UARTdrate[7] = { 0xAA, 0xFA, 0x1E, 0x00, 0x00, 0x25, 0x80 };  //Set up UART transfer speed speed as 9600bps
-uint8_t Set_signalStr[3] = { 0xAA, 0xFA, 0x87 };                          //Wireless signal strength when receiving useful data
+uint8_t Set_signalStr[3] = { 0xAA, 0xFA, 0x96 };                          //Wireless signal strength when receiving useful data
 uint8_t Set_Disturb[3] = { 0xAA, 0xFA, 0x78 };                            //Disturb wireless signal strength
 uint8_t inByte;
 
@@ -55,6 +55,7 @@ void setup() {
 
   //
   digitalWrite(Pin_CONFIG, LOW);
+
   digitalWrite(Pin_ENABLE, LOW);
 
   delay(500);
@@ -101,10 +102,12 @@ void setup() {
 
   delay(250);
   digitalWrite(Pin_CONFIG, HIGH);
-  digitalWrite(Pin_ENABLE, HIGH);
-  delay(250);
-
+  delay(50);
   digitalWrite(Pin_ENABLE, LOW);
+
+  // delay(12);
+
+  // digitalWrite(Pin_ENABLE, LOW);
 
   // reserve 200 bytes for the inputString:
   inputString.reserve(200);
