@@ -28,23 +28,31 @@ uint8_t Set_Reset[3] = { 0xAA, 0xFA, 0xF0 };                              //Rese
 uint8_t Set_Reading[3] = { 0xAA, 0xFA, 0xE1 };                            //Reading the current Config parameter
 uint8_t Set_frequency[7] = { 0xAA, 0xFA, 0xD2, 0x19, 0xDD, 0x18, 0x00 };  //433.92
 uint8_t Set_drate[7] = { 0xAA, 0xFA, 0xC3, 0x00, 0x00, 0x25, 0x80 };      //set up transfer speed as 9600bps
-uint8_t Set_bandwidth[5] = { 0xAA, 0xFA, 0xB4, 0x00, 0x69 };              //105KHZ
-
-// uint8_t Set_bandwidth[5] = { 0xAA, 0xFA, 0xB4, 0x00, 0x6E };              //110KHZ
+//
+// uint8_t Set_bandwidth[5] = { 0xAA, 0xFA, 0xB4, 0x00, 0x69 };              //105KHZ
+// uint8_t Set_bandwidth[5] = { 0xAA, 0xFA, 0xB4, 0x00, 0x6E };                  //110KHZ
 // uint8_t Set_bandwidth[5] = { 0xAA, 0xFA, 0xB4, 0x00, 0x73 };              //115.0KHZ
-// uint8_t Set_bandwidth[5] = { 0xAA, 0xFA, 0xB4, 0x03, 0x31 };              //817.0KHZ
-
+uint8_t Set_bandwidth[5] = { 0xAA, 0xFA, 0xB4, 0x03, 0x31 };              //817.0KHZ
+//
+// uint8_t Set_deviation[4] = { 0xAA, 0xFA, 0xA5, 0x50 };                    //Set up frequency deviation as 80KHz
+// uint8_t Set_deviation[4] = { 0xAA, 0xFA, 0xA5, 0x2D };  //Set up frequency deviation as 45KHz
 uint8_t Set_deviation[4] = { 0xAA, 0xFA, 0xA5, 0x28 };                    //Set up frequency deviation as 40KHz
-uint8_t Set_level[4] = { 0xAA, 0xFA, 0x96, 0x03 };                        //set up transmission power as level 3 (+8 dBm)
+//
+// uint8_t Set_level[4] = { 0xAA, 0xFA, 0x96, 0x03 };                        //set up transmission power as level 3 (+8 dBm)
+uint8_t Set_level[4] = { 0xAA, 0xFA, 0x96, 0x07 };                        //set up transmission power as level 3 (+20 dBm)
+//
 uint8_t Set_UARTdrate[7] = { 0xAA, 0xFA, 0x1E, 0x00, 0x00, 0x25, 0x80 };  //Set up UART transfer speed speed as 9600bps
-uint8_t Set_signalStr[3] = { 0xAA, 0xFA, 0x96 };                          //Wireless signal strength when receiving useful data
+uint8_t Set_signalStr[3] = { 0xAA, 0xFA, 0x87 };                          //Wireless signal strength when receiving useful data
 uint8_t Set_Disturb[3] = { 0xAA, 0xFA, 0x78 };                            //Disturb wireless signal strength
+
 uint8_t Set_Reciver[3] = { 0xAA, 0xFA, 0xE1 };                            //Disturb wireless signal strength
 
 uint8_t inByte;
-
+int buffer[64];
+int count = 0;
 String inputString = "";      // a String to hold incoming data
 bool stringComplete = false;  // whether the string is complete
+void clearBufferArray();      // function to clear buffer array
 
 
 void setup() {
@@ -59,7 +67,6 @@ void setup() {
 
   //
   digitalWrite(Pin_CONFIG, LOW);
-
   digitalWrite(Pin_ENABLE, LOW);
 
   delay(500);
@@ -72,11 +79,9 @@ void setup() {
 
   Serial2.write(Set_Reset, sizeof(Set_Reset));
   // Serial2.println();
-  Serial.println((char)Serial2.read());
   delay(250);
   Serial2.write(Set_frequency, sizeof(Set_frequency));
   // Serial2.println();
-  Serial.println((char)Serial2.read());
   delay(250);
   Serial2.write(Set_drate, sizeof(Set_drate));  //Set up wireless data rate
   // Serial2.println();
@@ -107,17 +112,13 @@ void setup() {
   delay(250);
 
   digitalWrite(Pin_CONFIG, HIGH);  //	Set low for configuration mode (connect to GND). Set high for communication (Default is high).
-  digitalWrite(Pin_ENABLE, LOW);  //Set low for normal mode as data transceiver (Default is low with 10k to GND). Set high to put into sleep mode.
+    delay(50);
+  digitalWrite(Pin_ENABLE, LOW);   //Set low for normal mode as data transceiver (Default is low with 10k to GND). Set high to put into sleep mode.
 
-  delay(50);
 
-
-  // delay(12);
-
-  digitalWrite(Pin_ENABLE, LOW);
 
   // reserve 200 bytes for the inputString:
-  inputString.reserve(1000);
+  // inputString.reserve(1000);
 }
 
 void loop() {
@@ -127,24 +128,39 @@ The green LED is off when the module is waiting for data to be received, the gre
   */
   // print the string when a newline arrives:
   delay(1000);
-  // Serial2.write(0xAA);
-  // Serial2.write(0xFA);
-  // Serial2.write(0xE1);
   Serial2.write(Set_Reciver, sizeof(Set_Reciver));  //
   // Serial2.println();
+  // Serial2.write(Set_Disturb, sizeof(Set_Disturb));  //
 
-
+  /*
   if (stringComplete) {
     Serial.println(inputString);
     // clear the string:
     inputString = "";
     stringComplete = false;
   }
+*/
+
+  if (Serial2.available()) {     // if date is coming from software serial port ==> data is coming from SoftSerial shield {
+    while (Serial2.available())  // reading data into char array
+    {
+      buffer[count++] = Serial2.read();  // writing data into array
+      if (count == 64) break;
+    }
+    for (int i = 0; i < count; i++) {
+      Serial.print(buffer[i], HEX);  // if no data transmission ends, write buffer to hardware serial port
+    }
+    clearBufferArray();  // call clearBufferArray function to clear the stored data from the array
+    count = 0;           // set counter of while loop to zero
+  }
+
+
+
   if (Serial.available())          // if data is available on hardware serial port ==> data is coming from PC or notebook
     Serial2.write(Serial.read());  // write it to the SoftSerial shield
-  Serial.println("...");
-}
+  Serial.println(">");
 
+}
 /*
   SerialEvent occurs whenever a new data comes in the hardware serial RX. This
   routine is run between each time loop() runs, so using delay inside loop can
@@ -164,4 +180,9 @@ void serialEvent() {
       stringComplete = true;
     }
   }
+}
+
+void clearBufferArray()  // function to clear buffer array
+{
+  for (int i = 0; i < count; i++) { buffer[i] = NULL; }  // clear all index of array with command NULL
 }
